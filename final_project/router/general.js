@@ -46,29 +46,6 @@ async function getAllBooks() {
   });
 }
 
-async function getFilterBooks(filerBy, filter) {
-  // Simulate asynchronous operation (e.g., fetching from a database)
-  let book = {};
-
-  if (filerBy == "isbn") {
-    book = books[filter];
-  } else if (filerBy == "author") {
-    for (const [key, value] of Object.entries(books)) {
-      if (value.author === filter) {
-        book = value;
-      }
-    }
-  } else if (filerBy == "title") {
-    for (const [key, value] of Object.entries(books)) {
-      if (value.title === filter) {
-        book = value;
-      }
-    }
-  }
-
-  return book;
-}
-
 // Get the book list available in the shop
 public_users.get("/", async function (req, res) {
   //Write your code here
@@ -81,22 +58,34 @@ public_users.get("/isbn/:isbn", async function (req, res) {
   //Write your code here
   let isbn = req.params.isbn;
 
-  return res.send(await getFilterBooks("isbn", isbn));
-  // return res.status(300).json({ message: "Yet to be implemented" });
+  let book = books[isbn];
+  return res.send(book);
 });
 
 // Get book details based on author
 public_users.get("/author/:author", async function (req, res) {
   //Write your code here
   let author = req.params.author;
-  return res.send(await getFilterBooks("author", author));
+  let book = {};
+  for (const [key, value] of Object.entries(books)) {
+    if (value.author === author) {
+      book = value;
+    }
+  }
+  return res.send(book);
 });
 
 // Get all books based on title
 public_users.get("/title/:title", async function (req, res) {
   //Write your code here
   let title = req.params.title;
-  return res.send(await getFilterBooks("title", title));
+  let book = {};
+  for (const [key, value] of Object.entries(books)) {
+    if (value.title === title) {
+      book = value;
+    }
+  }
+  return res.send(book);
 });
 
 //  Get book review
